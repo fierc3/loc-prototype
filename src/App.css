@@ -1,5 +1,39 @@
+@font-face {
+  font-family: Hylian;
+  src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: Hylian;
+  font-weight: bold;
+  src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
+}
+
+.Container{
+  background-color: 	#1e1e1e;
+  max-width: 100vw;
+  height: 100vh;
+  margin-top: -3vh;
+}
 .App {
+  width: 98vw;
+  display:flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 100vh;
+}
+
+.title{
+  height: 8vh;
+  width: 98vw;
   text-align: center;
+  font-family: Hylian;
+  background: black;
+  color: white;
+}
+
+.subtitle{
+  margin-top: -1em;
 }
 
 .App-logo {
@@ -35,4 +69,39 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.Play-grid{
+  background-color:#E3CDA6;
+  width: 60%;
+  height: 90vh;
+  flex: flex-grow;
+  border: solid white;
+}
+
+.Dev-area{
+  width: 40%;
+  height: 90%;
+  flex: flex-grow;
+  display:block;
+}
+
+.mainEditor{
+
+}
+
+.buttonBar{
+  height: 11%;
+  border: solid white;
+  color: white;
+  background: black;
+  cursor: pointer;
+}
+
+
+.playText {
+  margin-block: auto;
+  font-size: 300%;
+  font-family: Hylian;
 }
