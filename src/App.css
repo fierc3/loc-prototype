@@ -105,3 +105,42 @@
   font-size: 300%;
   font-family: Hylian;
 }
+
+.cell{
+  min-height: 2em;
+  min-width: 2em;
+  border: solid black;
+  flex:1;
+}
+
+.water{
+  background-color: aqua;
+}
+
+.rock{
+  background-color: grey;
+}
+
+.hero{
+  background-color: greenyellow;
+}
+
+.monster{
+  background-color: red;
+}
+
+.queen{
+  background-color: green;
+}
+
+.row{
+  flex-wrap: nowrap;
+  flex-direction: row;
+  display: flex;
+}
+
+.mapContainer{
+  flex-wrap: nowrap;
+  flex-direction: column;
+  display: flex;
+}

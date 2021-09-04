@@ -1,7 +1,7 @@
 import './App.css';
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
-import { createRef } from 'react';
 import { useRef } from 'react';
+import MapGrid from './MapGrid';
 
 function App() {
 const playerName: string = "a";
@@ -47,7 +47,9 @@ const showValue = () => {
         <h5 className="subtitle">A Serious Game Project</h5>
       </div>
       <div className="App">
-        <div className="Play-grid">aaa</div>
+        <div className="Play-grid">
+          <MapGrid mapData={mapData}></MapGrid>
+        </div>
         <div className="Dev-area">
           <Editor
             className="mainEditor"
