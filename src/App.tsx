@@ -20,7 +20,15 @@ function App() {
   const mapData = require("./maps/test.json");
   const Memory: any[] = [];
 
+  const [reload, setReload] = useState(false);
+
+
+
   const testFunction = () => {};
+
+  const reloadGrid = () => {
+    setReload(reload ? false : true); // get me out
+  }
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     monaco.editor.defineTheme("myTheme", {
@@ -177,13 +185,10 @@ function App() {
     turn();
   }
 
-
-  const [reload, setReload] = useState(false);
-
   const turn = () => {
     //TODO: Calculate Movement Speed for order of execution
     heroTurn();
-    setReload(reload ? false : true) //jesus christ this is bad
+    reloadGrid(); //TODO: fix with states
   }
 
   const heroTurn = () => {
