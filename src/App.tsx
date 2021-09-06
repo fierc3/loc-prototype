@@ -5,6 +5,7 @@ import { useRef } from "react";
 import MapGrid from "./MapGrid";
 import { isEntityName } from "typescript";
 import { useState } from "react";
+import { useEffect } from "react";
 
 
 
@@ -21,13 +22,36 @@ function App() {
   const playerName: string = "a";
   const editorRef:any = useRef(null);
   const playConsole:any = useRef(null);
-  const mapData = require("./maps/test.json");
+  const [mapData,setMapData] = useState(require("./maps/test.json"));
   const Memory: any[] = [];
 
   const [reload, setReload] = useState(false);
   const [playing, setPlaying] = useState(false);
 
 
+
+  useEffect(() => {
+    if(editorRef){
+      editorRef?.current?.updateOptions({
+        readOnly: playing
+      })
+      console.log("***CODING EDITING HAS BEEN LOCKED*****")
+      turn();
+    }
+
+  }, [playing])
+
+  useEffect(() => {
+    console.log("Movement detected!")
+  }, [mapData])
+
+
+  useEffect(() => {
+    if(reload){
+      //delay(700);
+      setReload( r => !r);
+    }
+  }, [reload])
 
   const setupLogger = () => {
     console.log(playConsole)
@@ -47,9 +71,13 @@ function App() {
   };
 
 
+  /*
   const reloadGrid = () => {
-    setReload(reload ? false : true); // get me out
+    console.log("reloadingGrid "+ reload)
+    setReload(true); // get me out
+    console.log("reloadingGrid "+ reload)
   }
+  */
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     monaco.editor.defineTheme("myTheme", {
@@ -67,6 +95,7 @@ function App() {
       },
     });
     monaco.editor.setTheme("myTheme");
+
     editorRef.current = editor;
     setupLogger();
   };
@@ -153,10 +182,12 @@ function App() {
 
   const clearTile = (x: number, y:number) => {
     mapData.tiles.rows[y+""][""+x] = null;
+    setMapData(mapData);
   }
 
   const setTile = (entity : Entity) =>{
-    mapData.tiles.rows[entity.row+""][""+entity.col] = entity.props;
+    mapData.tiles.rows[entity.row+""][""+entity.col] = entity.props
+    setMapData(mapData);
   }
 
   const updateTile = (entity: Entity, oldX: number, oldY : number) => {
@@ -209,6 +240,10 @@ function App() {
     updateTile(entity, oldX,oldY);
   }
 
+  function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 
   const play = () => {
     if(playing){
@@ -216,17 +251,23 @@ function App() {
     }
     console.log("Play is starting...");
     setPlaying(true);
-    turn();
   }
 
-  const turn = () => {
-    //TODO: Calculate Movement Speed for order of execution
-    heroTurn();
-    reloadGrid(); //TODO: fix with states  naaaaaaaaah or maybe not
+  const  turn = async () => {
+    while (playing) {
+      //TODO: Calculate Movement Speed for order of execution
+      heroTurn();
+      //await reloadGrid();
+      //TODO: fix with states  naaaaaaaaah or maybe not
+      setReload(true)
+      await delay(1000);
+
+    }
+
   }
 
   const heroTurn = () => {
-    console.log("It's the heroes turn!")
+    console.log("****It's the hero's turn!******")
     var heroCode = editorRef!.current!.getValue();
     var re = /mapData/gi;
     eval(heroCode.replace(re, 'no cheeto my mateo'));
@@ -242,13 +283,10 @@ function App() {
       </div>
       <div className="App">
         <div className="Play-grid"> 
-          {reload &&
+          {mapData && !reload?
           <MapGrid mapData={mapData}></MapGrid>
+          :<MapGrid mapData={mapData}></MapGrid>
           } 
-          {!reload &&
-          <MapGrid mapData={mapData}></MapGrid>
-          }
-
           <p className="console" ref={playConsole}></p>
         </div>
         <div className="Dev-area">
@@ -258,7 +296,10 @@ function App() {
             theme="vs-dark"
             defaultLanguage="typescript"
             defaultValue="/* some comment
-        test */"
+            test */
+           
+            var hero = getHero()
+            moveUp(hero);"
             onMount={handleEditorDidMount}
           />
           <div className="buttonBar" onClick={play}>
