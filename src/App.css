@@ -73,7 +73,6 @@
 
 
 .Play-grid{
-  background-color:#E3CDA6;
   width: 60%;
   height: 90vh;
   flex: flex-grow;
@@ -111,33 +110,62 @@
 user-select: none; /* Standard */
 }
 
+.running{
+  color:red;
+  cursor: not-allowed;
+}
+
+.console{
+  margin-block: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-user-select: none; /* Safari */        
+-moz-user-select: none; /* Firefox */
+-ms-user-select: none; /* IE10+/Edge */
+user-select: none; /* Standard */
+  color: white;
+  font-size: 80%;
+  max-height: 12em;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .cell{
   height: 5vh;
   width: 5vw;
-  min-width: 5em;
-  min-height: 5em;
-  border: solid black;
+  min-width: 4em;
+  min-height: 4em;
+  border: 0.1em solid black;
   flex:1;
 }
 
 .water{
-  background-color: aqua;
+  content:url(sprites/water.png);
+  background-color: #1E38EB;
 }
 
 .rock{
-  background-color: grey;
+  content:url(sprites/rock.png);
+  /*background-color: grey;*/
 }
 
 .hero{
-  background-color: greenyellow;
+  content:url(sprites/hero.png);
+  /*background-color: greenyellow;*/
 }
 
 .monster{
-  background-color: red;
+  content:url(sprites/monster.png);
+  /*background-color: red;*/
 }
 
 .queen{
-  background-color: green;
+  content:url(sprites/queen.png);
+  /*background-color: green;*/
+}
+
+.dmg{
+    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(180deg);
 }
 
 .row{
@@ -150,4 +178,5 @@ user-select: none; /* Standard */
   flex-wrap: nowrap;
   flex-direction: column;
   display: flex;
+  background-color: #E3CDA6;
 }

@@ -20,14 +20,32 @@ function App() {
   }
   const playerName: string = "a";
   const editorRef:any = useRef(null);
+  const playConsole:any = useRef(null);
   const mapData = require("./maps/test.json");
   const Memory: any[] = [];
 
   const [reload, setReload] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
 
 
-  const testFunction = () => {};
+  const setupLogger = () => {
+    console.log(playConsole)
+    var old = console.log;
+    console.log = function (message) {
+      if(playConsole){
+        if (typeof message == 'object') {
+          (playConsole.current as HTMLParagraphElement).innerHTML+= (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+      } else {
+        (playConsole.current as HTMLParagraphElement).innerHTML += message + '<br />';
+      }
+      }else{
+        old(message);
+      }
+
+    }
+  };
+
 
   const reloadGrid = () => {
     setReload(reload ? false : true); // get me out
@@ -50,6 +68,7 @@ function App() {
     });
     monaco.editor.setTheme("myTheme");
     editorRef.current = editor;
+    setupLogger();
   };
 
   const showValue = () => {
@@ -124,8 +143,12 @@ function App() {
 
   //TODO(mike): FIX!!!!
   const isBlocked = (x: number, y:number) : boolean => {
-    console.log(mapData.tiles.rows[y+""][""+x]);
-    return mapData.tiles.rows[y+""][""+x]?.type !== undefined
+    if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
+      console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
+      setPlaying(false);
+    }
+
+    return ["monster","rock","water"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) > 0
   } 
 
   const clearTile = (x: number, y:number) => {
@@ -188,13 +211,18 @@ function App() {
 
 
   const play = () => {
+    if(playing){
+      return;
+    }
+    console.log("Play is starting...");
+    setPlaying(true);
     turn();
   }
 
   const turn = () => {
     //TODO: Calculate Movement Speed for order of execution
     heroTurn();
-    reloadGrid(); //TODO: fix with states
+    reloadGrid(); //TODO: fix with states  naaaaaaaaah or maybe not
   }
 
   const heroTurn = () => {
@@ -204,6 +232,7 @@ function App() {
     eval(heroCode.replace(re, 'no cheeto my mateo'));
 
   }
+
 
   return (
     <div className="Container">
@@ -219,6 +248,8 @@ function App() {
           {!reload &&
           <MapGrid mapData={mapData}></MapGrid>
           }
+
+          <p className="console" ref={playConsole}></p>
         </div>
         <div className="Dev-area">
           <Editor
@@ -231,7 +262,7 @@ function App() {
             onMount={handleEditorDidMount}
           />
           <div className="buttonBar" onClick={play}>
-            <p unselectable="on" className="playText">PLAY</p>
+            <p unselectable="on" className={'playText ' + (playing ? 'running' : '')}>PLAY</p>
           </div>
         </div>
       </div>
