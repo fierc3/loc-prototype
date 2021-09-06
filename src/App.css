@@ -30,6 +30,7 @@
   font-family: Hylian;
   background: black;
   color: white;
+  padding-top: 2vh;
 }
 
 .subtitle{
@@ -78,6 +79,7 @@
   height: 90vh;
   flex: flex-grow;
   border: solid white;
+  overflow:auto;
 }
 
 .Dev-area{
@@ -107,8 +109,10 @@
 }
 
 .cell{
-  min-height: 2em;
-  min-width: 2em;
+  height: 5vh;
+  width: 5vw;
+  min-width: 5em;
+  min-height: 5em;
   border: solid black;
   flex:1;
 }
