@@ -1,9 +1,12 @@
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 import "./App.css";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { useRef } from "react";
 import MapGrid from "./MapGrid";
 import { isEntityName } from "typescript";
 import { useState } from "react";
+
+
 
 function App() {
 
@@ -16,7 +19,7 @@ function App() {
     props:any
   }
   const playerName: string = "a";
-  const editorRef = useRef(null);
+  const editorRef:any = useRef(null);
   const mapData = require("./maps/test.json");
   const Memory: any[] = [];
 
@@ -59,13 +62,14 @@ function App() {
       for (const [cellKey, cellValue] of Object.entries(
         mapData.tiles.rows[rowKey]
       )) {
-        if(cellValue && cellValue.type === type){
+        const value = cellValue as any;
+        if(cellValue && (cellValue as any).type === type){
           var entity: Entity = {
-            id: cellValue.id,
+            id: value.id,
             col : +cellKey,
             row : +rowKey,
-            type: cellValue.type,
-            movement: cellValue.movement ? cellValue.movement : 0,
+            type: value.type,
+            movement: value.movement ? value.movement : 0,
             props : cellValue
           }
           entities.push(entity)
@@ -80,13 +84,14 @@ function App() {
       for (const [cellKey, cellValue] of Object.entries(
         mapData.tiles.rows[rowKey]
       )) {
-        if(cellValue && cellValue.id === id){
+        const value = cellValue as any;
+        if(cellValue && value.id === id){
           var entity: Entity = {
-            id: cellValue.id,
+            id: value.id,
             col : +cellKey,
             row : +rowKey,
-            type: cellValue.type,
-            movement: cellValue.movement ? cellValue.movement : 0,
+            type: value.type,
+            movement: value.movement ? value.movement : 0,
             props : cellValue
           }
           return entity;
@@ -119,7 +124,8 @@ function App() {
 
   //TODO(mike): FIX!!!!
   const isBlocked = (x: number, y:number) : boolean => {
-    return isInbounds(x,y) && mapData.tiles.rows[y+""][""+x]?.types !== undefined
+    console.log(mapData.tiles.rows[y+""][""+x]);
+    return mapData.tiles.rows[y+""][""+x]?.type !== undefined
   } 
 
   const clearTile = (x: number, y:number) => {
@@ -225,7 +231,7 @@ function App() {
             onMount={handleEditorDidMount}
           />
           <div className="buttonBar" onClick={play}>
-            <p className="playText">PLAY</p>
+            <p unselectable="on" className="playText">PLAY</p>
           </div>
         </div>
       </div>
