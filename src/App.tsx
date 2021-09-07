@@ -26,14 +26,14 @@ function App() {
   const Memory: any[] = [];
 
   const [reload, setReload] = useState(false);
-  const [playing, setPlaying] = useState(false);
-
+  const [playing, setPlaying] = useState('false');
+  const [intro, setIntro] = useState(true);
 
 
   useEffect(() => {
     if(editorRef){
       editorRef?.current?.updateOptions({
-        readOnly: playing
+        readOnly: playing === 'true'
       })
       console.log("***CODING EDITING HAS BEEN LOCKED*****")
       turn();
@@ -42,8 +42,9 @@ function App() {
   }, [playing])
 
   useEffect(() => {
-    console.log("Movement detected!")
+
   }, [mapData])
+  
 
 
   useEffect(() => {
@@ -52,6 +53,25 @@ function App() {
       setReload( r => !r);
     }
   }, [reload])
+
+  /*SOUNDS */
+  var ost = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
+  var mvmt = new Audio('http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav');
+
+  useEffect(() => {
+    if(!intro){
+      //var audio = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
+      ost.volume = 0.2;
+      ost.play();
+    }
+  }, [intro])
+
+
+const playMovementSound = () =>{
+  //http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav
+  mvmt.volume = 0.5;
+  mvmt.play();
+}
 
   const setupLogger = () => {
     console.log(playConsole)
@@ -174,7 +194,8 @@ function App() {
   const isBlocked = (x: number, y:number) : boolean => {
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
       console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
-      setPlaying(false);
+      setPlaying('false');
+      console.log(playing);
     }
 
     return ["monster","rock","water"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) > 0
@@ -192,6 +213,7 @@ function App() {
 
   const updateTile = (entity: Entity, oldX: number, oldY : number) => {
     clearTile(oldX, oldY)
+    playMovementSound();
     setTile(entity)
   }
 
@@ -246,15 +268,15 @@ function App() {
 
 
   const play = () => {
-    if(playing){
+    if(playing === 'true'){
       return;
     }
     console.log("Play is starting...");
-    setPlaying(true);
+    setPlaying('true');
   }
 
   const  turn = async () => {
-    while (playing) {
+    while (playing==='true' && findQueen()) {
       //TODO: Calculate Movement Speed for order of execution
       heroTurn();
       //await reloadGrid();
@@ -277,6 +299,9 @@ function App() {
 
   return (
     <div className="Container">
+       <source src="/sounds/theme.mp3" type="mp3"/>
+      {intro ?<div className="intro"><h1 >ARE THOU READY</h1> <a className="intro-answer" onClick={() => (setIntro(false))}>YES</a></div>:
+      <>
       <div className="title">
         <h1>Legend of the Coder</h1>
         <h5 className="subtitle">A Serious Game Project</h5>
@@ -303,10 +328,13 @@ function App() {
             onMount={handleEditorDidMount}
           />
           <div className="buttonBar" onClick={play}>
-            <p unselectable="on" className={'playText ' + (playing ? 'running' : '')}>PLAY</p>
+            <p unselectable="on" className={'playText ' + (playing === 'true' ? 'running' : '')}>PLAY</p>
           </div>
+         
         </div>
       </div>
+       </>
+}
     </div>
   );
 }
