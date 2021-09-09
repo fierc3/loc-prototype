@@ -16,7 +16,8 @@ function App() {
     type: string
     row : number
     col : number
-    movement: number
+    movement: number,
+    initiative: number,
     props:any
   }
   const playerName: string = "a";
@@ -30,7 +31,10 @@ function App() {
   const [intro, setIntro] = useState(true);
 
 
+  const baseDelay = 1500;
+
   useEffect(() => {
+    console.log("playy")
     if(editorRef){
       editorRef?.current?.updateOptions({
         readOnly: playing === 'true'
@@ -54,23 +58,23 @@ function App() {
     }
   }, [reload])
 
-  /*SOUNDS */
-  var ost = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
-  var mvmt = new Audio('http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav');
+  /*SOUNDS 
+  var ost = new Audio('./sounds/theme.mp3');
+  var mvmt = new Audio('http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav');*/
 
   useEffect(() => {
-    if(!intro){
+   /* if(!intro){
       //var audio = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
       ost.volume = 0.2;
       ost.play();
-    }
+    }*/
   }, [intro])
 
 
-const playMovementSound = () =>{
+const playMovementSound = () =>{/*
   //http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav
   mvmt.volume = 0.5;
-  mvmt.play();
+  mvmt.play();*/
 }
 
   const setupLogger = () => {
@@ -138,6 +142,7 @@ const playMovementSound = () =>{
             row : +rowKey,
             type: value.type,
             movement: value.movement ? value.movement : 0,
+            initiative: value.initiative ? value.initiative : 1,
             props : cellValue
           }
           entities.push(entity)
@@ -160,6 +165,7 @@ const playMovementSound = () =>{
             row : +rowKey,
             type: value.type,
             movement: value.movement ? value.movement : 0,
+            initiative: value.initiative ? value.initiative : 1,
             props : cellValue
           }
           return entity;
@@ -190,7 +196,6 @@ const playMovementSound = () =>{
   }
 
 
-  //TODO(mike): FIX!!!!
   const isBlocked = (x: number, y:number) : boolean => {
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
       console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
@@ -275,14 +280,37 @@ const playMovementSound = () =>{
     setPlaying('true');
   }
 
+  const allTurns = async (entities: Entity[]) => {
+    var index = 0;
+
+    const entityTurn = async (entity:Entity) => {
+        console.log("entity " + index );
+        if(entity.type === 'hero'){
+          heroTurn();
+        }else{
+          monsterTurn(entity);
+        }
+        setReload(true)
+        await delay(baseDelay);
+        index++;
+        if(index < entities.length){
+          entityTurn(entities[index])
+        }
+      }
+    await entityTurn(entities[index])
+
+  }
+
   const  turn = async () => {
+    console.log("turn");
     while (playing==='true' && findQueen()) {
-      //TODO: Calculate Movement Speed for order of execution
-      heroTurn();
+      var entities = getMonsters();
+      entities.push(getHero());
+      entities = entities.sort((x,y) => x.initiative - y.initiative);
+      await allTurns(entities);
+      await delay(entities.length * (baseDelay+500));
       //await reloadGrid();
       //TODO: fix with states  naaaaaaaaah or maybe not
-      setReload(true)
-      await delay(1000);
 
     }
 
@@ -294,6 +322,12 @@ const playMovementSound = () =>{
     var re = /mapData/gi;
     eval(heroCode.replace(re, 'no cheeto my mateo'));
 
+  }
+
+  const monsterTurn = (monster:Entity) => {
+    console.log("---Monster "+monster.id+" turn---")
+    //SAMPLE CODE / in further version logic should be interchangeable
+    var hero = getHero();
   }
 
 

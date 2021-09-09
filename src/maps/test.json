@@ -53,7 +53,8 @@
         "id" : 666,
         "type":"hero",
         "movement": 1,
-        "hp" : 10
+        "hp" : 10,
+        "initiative": 2
       
         }
       },
@@ -64,7 +65,8 @@
           "id" : 10,
           "type":"monster", 
           "movement": 1,
-          "hp":2
+          "hp":2,
+          "initiative": 1
           }
         },
       "8": {},
@@ -72,7 +74,8 @@
         "id" : 11,
         "type":"monster", 
         "movement": 1,
-        "hp": 2}}
+        "hp": 2,
+        "initiative": 3}}
     }
   }
 }
