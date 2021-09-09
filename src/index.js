@@ -4,6 +4,7 @@ import './index.css';
 import App from './App.tsx';
 import MapGrid from './MapGrid.tsx'
 import reportWebVitals from './reportWebVitals';
+import themeMp3 from './sounds/theme.mp3'
 
 ReactDOM.render(
   <React.StrictMode>

@@ -6,6 +6,11 @@ import MapGrid from "./MapGrid";
 import { isEntityName } from "typescript";
 import { useState } from "react";
 import { useEffect } from "react";
+// @ts-ignore
+import themeMp3 from './sounds/theme.mp3';
+// @ts-ignore
+import stepsMp3 from './sounds/steps.wav';
+
 
 
 
@@ -57,23 +62,21 @@ function App() {
     }
   }, [reload])
 
-  /*SOUNDS 
-  var ost = new Audio('./sounds/theme.mp3');
-  var mvmt = new Audio('http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav');*/
-
+  /*SOUNDS */
   useEffect(() => {
-   /* if(!intro){
+    if(!intro){
       //var audio = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
+      var ost = new Audio(themeMp3);
       ost.volume = 0.2;
       ost.play();
-    }*/
+    }
   }, [intro])
 
 
-const playMovementSound = () =>{/*
-  //http://noproblo.dayjo.org/ZeldaSounds/LOZ/LOZ_Stairs.wav
+const playMovementSound = () =>{
+  var mvmt = new Audio(stepsMp3);
   mvmt.volume = 0.5;
-  mvmt.play();*/
+  mvmt.play();
 }
 
   const setupLogger = () => {
@@ -380,7 +383,6 @@ function getRandomArbitrary(min:number, max:number) {
 
   return (
     <div className="Container">
-       <source src="/sounds/theme.mp3" type="mp3"/>
       {intro ?<div className="intro"><h1 >ARE THOU READY</h1> <a className="intro-answer" onClick={() => (setIntro(false))}>YES</a></div>:
       <>
       <div className="title">
