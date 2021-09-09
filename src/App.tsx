@@ -57,7 +57,6 @@ function App() {
 
   useEffect(() => {
     if(reload){
-      //delay(700);
       setReload( r => !r);
     }
   }, [reload])
@@ -65,7 +64,6 @@ function App() {
   /*SOUNDS */
   useEffect(() => {
     if(!intro){
-      //var audio = new Audio('https://dl68.youtubetomp3music.com/file/youtubeIOhE-nkJxwM128.mp3?fn=Switched%20On%20-%20Zelda%20-%20%20A%20Link%20To%20The%20Past.mp3');
       var ost = new Audio(themeMp3);
       ost.volume = 0.2;
       ost.play();
@@ -96,15 +94,6 @@ const playMovementSound = () =>{
 
     }
   };
-
-
-  /*
-  const reloadGrid = () => {
-    console.log("reloadingGrid "+ reload)
-    setReload(true); // get me out
-    console.log("reloadingGrid "+ reload)
-  }
-  */
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     monaco.editor.defineTheme("myTheme", {
@@ -325,7 +314,6 @@ function getRandomArbitrary(min:number, max:number) {
   }
 
   const  turn = async () => {
-    console.log("turn");
     while (playing==='true' && findQueen()) {
       var entities = getMonsters();
       entities.push(getHero());
