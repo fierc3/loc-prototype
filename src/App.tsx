@@ -31,10 +31,9 @@ function App() {
   const [intro, setIntro] = useState(true);
 
 
-  const baseDelay = 1500;
+  const baseDelay = 400; //1500 too slow
 
   useEffect(() => {
-    console.log("playy")
     if(editorRef){
       editorRef?.current?.updateOptions({
         readOnly: playing === 'true'
@@ -82,6 +81,7 @@ const playMovementSound = () =>{/*
     var old = console.log;
     console.log = function (message) {
       if(playConsole){
+        (playConsole.current as HTMLParagraphElement).scrollTop = (playConsole.current as HTMLParagraphElement).scrollHeight;
         if (typeof message == 'object') {
           (playConsole.current as HTMLParagraphElement).innerHTML+= (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
       } else {
@@ -200,15 +200,17 @@ const playMovementSound = () =>{/*
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
       console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
       setPlaying('false');
-      console.log(playing);
     }
 
-    return ["monster","rock","water"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) > 0
+    return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) > 0
   } 
 
   const clearTile = (x: number, y:number) => {
-    mapData.tiles.rows[y+""][""+x] = null;
-    setMapData(mapData);
+    if(mapData.tiles.rows[y+""] &&  mapData.tiles.rows[y+""][""+x]){
+      mapData.tiles.rows[y+""][""+x] = null;
+      setMapData(mapData);
+    }
+
   }
 
   const setTile = (entity : Entity) =>{
@@ -222,54 +224,73 @@ const playMovementSound = () =>{/*
     setTile(entity)
   }
 
-  const moveUp = (entity: Entity) => {
+  const moveUp = (entity: Entity):boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
     entity.row= entity.row - entity.movement;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go up");
-      return;
+      entity.col = oldX;
+      entity.row = oldY;
+      return false;
     }
     updateTile(entity, oldX,oldY);
+    return true;
   }
 
-  const moveDown = (entity: Entity) => {
+  const moveDown = (entity: Entity) : boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
     entity.row=  oldY + 1;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go down");
-      return;
+      entity.col = oldX;
+      entity.row = oldY;
+      return false;
     }
     updateTile(entity, oldX,oldY);
+    return true;
   }
 
-  const moveLeft = (entity:Entity) => {
+  const moveLeft = (entity:Entity) : boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
     entity.col = oldX - entity.movement;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go left");
-      return;
+      entity.col = oldX;
+      entity.row = oldY;
+      return false;
     }
     updateTile(entity, oldX,oldY);
+    return true;
   }
 
-  const moveRight = (entity: Entity) => {
+  const moveRight = (entity: Entity) :boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
-    console.log(entity);
     entity.col = oldX + entity.movement;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go right");
-      return;
+      entity.col = oldX;
+      entity.row = oldY;
+      return false;
     }
     updateTile(entity, oldX,oldY);
+    return true;
   }
 
-  function delay(ms: number) {
+/*****HELPER METHODS*********/
+
+function delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
 }
+
+function getRandomArbitrary(min:number, max:number) {
+  return Math.random() * (max - min) + min;
+}
+
+/********************* */
 
 
   const play = () => {
@@ -284,7 +305,6 @@ const playMovementSound = () =>{/*
     var index = 0;
 
     const entityTurn = async (entity:Entity) => {
-        console.log("entity " + index );
         if(entity.type === 'hero'){
           heroTurn();
         }else{
@@ -308,7 +328,7 @@ const playMovementSound = () =>{/*
       entities.push(getHero());
       entities = entities.sort((x,y) => x.initiative - y.initiative);
       await allTurns(entities);
-      await delay(entities.length * (baseDelay+500));
+      await delay(entities.length * (baseDelay+ (baseDelay/100)));
       //await reloadGrid();
       //TODO: fix with states  naaaaaaaaah or maybe not
 
@@ -328,6 +348,33 @@ const playMovementSound = () =>{/*
     console.log("---Monster "+monster.id+" turn---")
     //SAMPLE CODE / in further version logic should be interchangeable
     var hero = getHero();
+    var colDiff = hero.col - monster.col;
+    var rowDiff = hero.row - monster.row;
+    var notBlocked = true;
+    if(Math.abs(rowDiff) > Math.abs(colDiff) ){ // check which axis is further away, then reduce the one closer
+        //reduce row axis
+        if(rowDiff<0){
+         notBlocked= moveUp(monster);
+        }else if(rowDiff >= 1){
+         notBlocked= moveDown(monster);
+        }
+    }else{
+      //recude col axis
+      if(colDiff<0){
+        notBlocked= moveLeft(monster);
+      }else if(colDiff >= 1){
+       notBlocked = moveRight(monster);
+      }
+    }
+    while(!notBlocked){
+        {
+          var movementOptions = [():boolean => {return moveDown(monster)}, ():boolean => {return moveUp(monster)}, ():boolean => {return moveLeft(monster)}, ():boolean => {return moveRight(monster)}];
+          var pick = getRandomArbitrary(0,movementOptions.length-1);
+          notBlocked = movementOptions[Math.trunc(pick)]();
+          console.log("Monster is confused, looking for alternative path")
+        }
+    }
+
   }
 
 

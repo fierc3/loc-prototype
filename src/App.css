@@ -106,7 +106,7 @@
 
 .Play-grid{
   width: 60%;
-  height: 90vh;
+  height:89vh;
   border: solid white;
   overflow:auto;
   display: flex;
@@ -159,7 +159,7 @@ user-select: none; /* Standard */
   font-size: 80%;
     overflow: auto;
     display: flex;
-    flex-direction: column-reverse;
+   /* flex-direction: column-reverse; more consistent with js solution*/
 }
 
 .cell{
