@@ -38,6 +38,7 @@
 
 .intro-answer{
   cursor: pointer;
+  padding-right: 2em;
 }
 
 .App {
@@ -172,7 +173,7 @@ user-select: none; /* Standard */
     margin-block: auto;
     font-family: Hylian;
     color: white;
-    font-size: 100%;
+    font-size: 85%;
       overflow: auto;
       display: flex;
      /* flex-direction: column-reverse; more consistent with js solution*/

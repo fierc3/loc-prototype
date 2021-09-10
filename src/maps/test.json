@@ -1,5 +1,5 @@
 {
-  "name": "tutorialmap",
+  "name": "Level 1: The heros welcome",
   "defaults": {
     "types": "water,ground,rock,monster,queen",
     "startHealth": 10,
@@ -58,15 +58,19 @@
       
         }
       },
-      "7": {"3":{
+      "7": 
+        {
+        "3":{
         "id" : 9,
         "type":"rock"
-        },"8":{
+        },
+        "8":{
           "id" : 10,
           "type":"monster", 
           "movement": 1,
           "hp":2,
-          "initiative": 1
+          "initiative": 1,
+          "xp": 100
           }
         },
       "8": {},
@@ -75,7 +79,8 @@
         "type":"monster", 
         "movement": 1,
         "hp": 2,
-        "initiative": 3}}
+        "initiative": 3,
+        "xp": 100}}
     }
   }
 }

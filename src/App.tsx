@@ -36,6 +36,7 @@ function App() {
   const [playing, setPlaying] = useState('false');
   const [intro, setIntro] = useState(true);
   const [statsOutput, setStatsOutput] = useState("");
+  const [myXp, setMyXp] = useState(0);
 
 
   const baseDelay = 400; //1500 too slow
@@ -52,10 +53,18 @@ function App() {
   }, [playing])
 
   useEffect(() => {
+    var storedXp =  localStorage.getItem('xp') as number | null;
+    if(storedXp) setMyXp(storedXp);
     updateStatDisplay();
   }, [mapData])
   
 
+  useEffect(() => {
+    if(myXp > 0){
+      localStorage.setItem('xp', myXp+"");
+      updateStatDisplay();
+    }
+  },[myXp])
 
   useEffect(() => {
     if(reload){
@@ -81,15 +90,24 @@ function App() {
     }
   }, [intro])
 
+  const calculateLevel  = (xp: number): number => {
+    if(xp === 0){
+      return 0;
+    }
+    return Math.trunc(xp / 200);
+  }
 
   const updateStatDisplay = () =>{
     var entities = getMonsters();
     var hero = getHero();
     if(hero) entities.push(hero);
-    var output = "\\\\\\STATS///<br/>";
+    var output = "\\\\\\STATS///<br/>MY LEVEL:" + calculateLevel(myXp) + "     MY XP:" + myXp +"<br/><br/>";
     entities.reverse().forEach(x =>{ 
-      if(x.props.hp < 1){
+      if(x.props.hp < 1){ //kill
         clearTile(x.col, x.row)
+        if(x.props.xp){
+          setMyXp(myXp as number + x.props.xp as number);
+        }
         return;
       }
       output += x.type + "-"+ x.id+ "&emsp;&emsp;&emsp;&emsp;hp: " + x.props.hp +"&emsp;&emsp;&emsp;&emsp;ATP:"+x.attack+"<br/>"});
@@ -235,6 +253,7 @@ const playMovementSound = () =>{
   const isBlocked = (x: number, y:number) : boolean => {
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
       console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
+      setMyXp(myXp as number + 300);
       setPlaying('false');
     }
 
@@ -459,11 +478,17 @@ function getRandomArbitrary(min:number, max:number) {
 
   return (
     <div className="Container">
-      {intro ?<div className="intro"><h1 >ARE THOU READY</h1> <a className="intro-answer" onClick={() => (setIntro(false))}>YES</a></div>:
+      {intro ?<div className="intro"><h1 >Choose thy fate alone. Seize it with thine own hands.</h1> 
+      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 1</a>
+      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 2</a>
+      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 3</a>
+      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 4</a>
+      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 5</a>
+      </div>:
       <>
       <div className="title">
         <h1>Legend of the Coder</h1>
-        <h5 className="subtitle">A Serious Game Project</h5>
+        <h5 className="subtitle">{mapData.name}</h5>
       </div>
       <div className="App">
         <div className="Play-grid"> 
