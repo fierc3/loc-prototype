@@ -34,6 +34,7 @@ function App() {
   const [reload, setReload] = useState(false);
   const [playing, setPlaying] = useState('false');
   const [intro, setIntro] = useState(true);
+  const [statsOutput, setStatsOutput] = useState("");
 
 
   const baseDelay = 400; //1500 too slow
@@ -57,7 +58,9 @@ function App() {
 
   useEffect(() => {
     if(reload){
+      console.log("reloadd+")
       setReload( r => !r);
+      updateStatDisplay();
     }
   }, [reload])
 
@@ -70,6 +73,14 @@ function App() {
     }
   }, [intro])
 
+
+  const updateStatDisplay = () =>{
+    var entities = getMonsters();
+    entities.push(getHero());
+    var output = "\\\\\\STATS///<br/>";
+    entities.reverse().forEach(x => output += x.type + "-"+ x.id+ "&emsp;&emsp;&emsp;&emsp;hp: " + x.props.hp +"<br/>");
+    setStatsOutput(output);
+  }
 
 const playMovementSound = () =>{
   var mvmt = new Audio(stepsMp3);
@@ -84,9 +95,9 @@ const playMovementSound = () =>{
       if(playConsole){
         (playConsole.current as HTMLParagraphElement).scrollTop = (playConsole.current as HTMLParagraphElement).scrollHeight;
         if (typeof message == 'object') {
-          (playConsole.current as HTMLParagraphElement).innerHTML+= (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+          (playConsole.current as HTMLParagraphElement).innerHTML= (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />' + (playConsole.current as HTMLParagraphElement).innerHTML;
       } else {
-        (playConsole.current as HTMLParagraphElement).innerHTML += message + '<br />';
+        (playConsole.current as HTMLParagraphElement).innerHTML = message + '<br />' + (playConsole.current as HTMLParagraphElement).innerHTML;
       }
       }else{
         old(message);
@@ -383,7 +394,11 @@ function getRandomArbitrary(min:number, max:number) {
           <MapGrid mapData={mapData}></MapGrid>
           :<MapGrid mapData={mapData}></MapGrid>
           } 
-          <p className="console" ref={playConsole}></p>
+          <div className="outputs">
+              <p className="console" ref={playConsole}></p>
+              <p className="stats" dangerouslySetInnerHTML={{__html: statsOutput}}></p>
+          </div>
+          
         </div>
         <div className="Dev-area">
           <Editor

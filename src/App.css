@@ -148,19 +148,36 @@ user-select: none; /* Standard */
   cursor: not-allowed;
 }
 
+
+.outputs{
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+}
+
 .console{
   margin-block: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  -webkit-user-select: none; /* Safari */        
--moz-user-select: none; /* Firefox */
--ms-user-select: none; /* IE10+/Edge */
-user-select: none; /* Standard */
   color: white;
   font-size: 80%;
     overflow: auto;
     display: flex;
    /* flex-direction: column-reverse; more consistent with js solution*/
 }
+
+
+.stats{
+  
+    margin-block: auto;
+    font-family: Hylian;
+    color: white;
+    font-size: 100%;
+      overflow: auto;
+      display: flex;
+     /* flex-direction: column-reverse; more consistent with js solution*/
+  
+}
+
 
 .cell{
   height: 5vh;
