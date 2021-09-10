@@ -9,7 +9,7 @@ const MapGrid = (props: any) =>{
 
             for(var colIndex = 0; colIndex < props.mapData.defaults.xsize; colIndex++ ){
                 var current = props.mapData.tiles.rows[rowIndex+""][colIndex];
-                row.push(<div className={"cell " + current?.type } key={colIndex+rowIndex}></div>)
+                row.push(<div className={"cell " + (current ? current.type : 'bg-tile') + (current?.dmg ? ' dmg' : '')  } key={colIndex+rowIndex}></div>)
             }
             rows.push(<div className="row" key={rowIndex+row}>{row}</div>);
         }

@@ -3,13 +3,27 @@ import "./App.css";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import { useRef } from "react";
 import MapGrid from "./MapGrid";
-import { isEntityName } from "typescript";
 import { useState } from "react";
 import { useEffect } from "react";
 // @ts-ignore
 import themeMp3 from './sounds/theme.mp3';
 // @ts-ignore
 import stepsMp3 from './sounds/steps.wav';
+// @ts-ignore
+import hurtMp3 from './sounds/hurt.wav';
+// @ts-ignore
+import attackMp3 from './sounds/attack.wav';
+// @ts-ignore
+import enemyDieMp3 from './sounds/enemydie.wav';
+// @ts-ignore
+import enemyHurtMp3 from './sounds/enemyhurt.wav'
+// @ts-ignore
+import gameOverMp3 from './sounds/gameover.wav'
+// @ts-ignore
+import winMp3 from './sounds/win.wav'
+// @ts-ignore
+import battleMp3 from './sounds/battle.mp3'
+
 
 
 
@@ -29,14 +43,16 @@ function App() {
   const playerName: string = "a";
   const editorRef:any = useRef(null);
   const playConsole:any = useRef(null);
-  const [mapData,setMapData] = useState(require("./maps/test.json"));
-  const Memory: any[] = [];
+  const [mapData,setMapData] = useState(require("./maps/1.json"));
 
   const [reload, setReload] = useState(false);
   const [playing, setPlaying] = useState('false');
   const [intro, setIntro] = useState(true);
   const [statsOutput, setStatsOutput] = useState("");
   const [myXp, setMyXp] = useState(0);
+  const [enemiesInRange, setEnemiesInRage]= useState<Entity[]>([]);
+  const [battleOst, setBattleOst] = useState(new Audio(battleMp3));
+  const [exploreOst, setExploreOst] = useState(new Audio(themeMp3));
 
 
   const baseDelay = 400; //1500 too slow
@@ -53,8 +69,8 @@ function App() {
   }, [playing])
 
   useEffect(() => {
-    var storedXp =  localStorage.getItem('xp') as number | null;
-    if(storedXp) setMyXp(storedXp);
+    var storedXp =  localStorage.getItem('xp');
+    if(storedXp) setMyXp(Number(storedXp));
     updateStatDisplay();
   }, [mapData])
   
@@ -75,20 +91,32 @@ function App() {
         //gameover
         setPlaying('false');
         navigator.clipboard.writeText(editorRef!.current!.getValue())
+        playGameOverSound();
         alert("GAME OVER. Sending thy hero back to the menu. Copied the used code to clipboard");
         window.location.reload();
       }
     }
   }, [reload])
-
+  
   /*SOUNDS */
   useEffect(() => {
     if(!intro){
-      var ost = new Audio(themeMp3);
-      ost.volume = 0.2;
-      ost.play();
+      if(enemiesInRange.length < 1 || getMonsters().length < 1){
+        battleOst.pause();
+        exploreOst.volume = 0.3;
+        exploreOst.loop = true;
+        exploreOst.play();
+      }else if(battleOst.paused === true){
+        exploreOst.pause();
+        battleOst.volume= 0.4;
+        battleOst.play();
+        battleOst.loop = true;
+      }
+      setExploreOst(exploreOst);
+      setBattleOst(battleOst);
+
     }
-  }, [intro])
+  }, [intro, enemiesInRange, mapData])
 
   const calculateLevel  = (xp: number): number => {
     if(xp === 0){
@@ -104,9 +132,11 @@ function App() {
     var output = "\\\\\\STATS///<br/>MY LEVEL:" + calculateLevel(myXp) + "     MY XP:" + myXp +"<br/><br/>";
     entities.reverse().forEach(x =>{ 
       if(x.props.hp < 1){ //kill
+        removeFromRange(x);
         clearTile(x.col, x.row)
         if(x.props.xp){
-          setMyXp(myXp as number + x.props.xp as number);
+          var xpGain = myXp as number + x.props.xp as number;
+          setMyXp(xpGain);
         }
         return;
       }
@@ -119,6 +149,44 @@ const playMovementSound = () =>{
   mvmt.volume = 0.5;
   mvmt.play();
 }
+
+const playAttackSound = () =>{
+  var audio = new Audio(attackMp3);
+  audio.volume = 0.7;
+  audio.play();
+}
+
+const playHeroHurtSound = () =>{
+  var audio = new Audio(hurtMp3);
+  audio.volume = 0.7;
+  audio.play();
+}
+
+const playEnemyHurtSound = () =>{
+  var audio = new Audio(enemyHurtMp3);
+  audio.volume = 0.7;
+  audio.play();
+}
+
+const playEnemyDieSound = () => {
+  var audio = new Audio(enemyDieMp3);
+  audio.volume = 0.7;
+  audio.play();
+}
+
+
+const playWinSound = () => {
+  var audio = new Audio(winMp3);
+  audio.volume = 0.8;
+  audio.play();
+}
+
+const playGameOverSound = () => {
+  var audio = new Audio(gameOverMp3);
+  audio.volume = 0.9;
+  audio.play();
+}
+
 
   const setupLogger = () => {
     console.log(playConsole)
@@ -253,6 +321,7 @@ const playMovementSound = () =>{
   const isBlocked = (x: number, y:number) : boolean => {
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
       console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
+      playWinSound();
       setMyXp(myXp as number + 300);
       setPlaying('false');
     }
@@ -341,10 +410,20 @@ const playMovementSound = () =>{
     if (defender) {
       console.log(attacker.type + " is attacking " + defender.type + " for " + attacker.attack)
       defender.props.hp = (defender?.props.hp - attacker?.attack);
+      defender.props.dmg = true;
+      playAttackSound();
       if(defender.props.hp < 1){
         //remove defender
-        //if(defender.type !== 'hero')
+        if(defender.type !== 'hero'){
+          playEnemyDieSound();
+        }
        // clearTile(x,y);
+      }else{
+        if(defender.type === 'hero'){
+          playHeroHurtSound();
+        }else{
+          playEnemyHurtSound();
+        }
       }
     } else {
       console.log(attacker.type + " tried to attack [col " + x + ", row" + y + "] but nothing to attack was there");
@@ -378,7 +457,8 @@ function getRandomArbitrary(min:number, max:number) {
     var index = 0;
 
     const entityTurn = async (entity:Entity) => {
-      if(!playing) return;
+      if(!playing || entity.props.hp < 1) return;
+      entity.props.dmg=false;
         if(entity.type === 'hero'){
           heroTurn();
         }else{
@@ -416,6 +496,13 @@ function getRandomArbitrary(min:number, max:number) {
 
   }
 
+  const removeFromRange = (monster: Entity) => {
+    if(enemiesInRange.find(x => x.id === monster.id)){
+      var index = enemiesInRange.indexOf(monster)
+      setEnemiesInRage(enemiesInRange.splice(index,1));
+    }
+  }
+
   const monsterTurn = (monster: Entity) => {
     //SAMPLE CODE / in further version logic should be interchangeable
     var hero = getHero();
@@ -425,11 +512,12 @@ function getRandomArbitrary(min:number, max:number) {
     var notBlocked = true;
 
     if (Math.abs(rowDiff) + Math.abs(colDiff) < 2) {
+      if(!enemiesInRange.find(x => x.id === monster.id)){
+        setEnemiesInRage([...enemiesInRange, monster]);
+      }
       attack(hero.col, hero.row, monster);
     } else {
-
-
-
+      removeFromRange(monster);
       if (Math.abs(rowDiff) > Math.abs(colDiff)) { // check which axis is further away, then reduce the one closer
         //reduce row axis
         if (rowDiff < 0) {
@@ -472,6 +560,7 @@ function getRandomArbitrary(min:number, max:number) {
   const spinAttack = () => {
       console.log("COULD SPINATTACK, ABILITY HASN'T BEEN UNLOCKED YET");
     }
+    const Memory: any[] = [];
 
 
 
@@ -479,11 +568,11 @@ function getRandomArbitrary(min:number, max:number) {
   return (
     <div className="Container">
       {intro ?<div className="intro"><h1 >Choose thy fate alone. Seize it with thine own hands.</h1> 
-      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 1</a>
-      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 2</a>
-      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 3</a>
-      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 4</a>
-      <a className="intro-answer" onClick={() => (setIntro(false))}>LEVEL 5</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/1.json"));(setIntro(false))}}>LEVEL 1</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/2.json"));(setIntro(false))}}>LEVEL 2</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/3.json"));(setIntro(false))}}>LEVEL 3</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/1.json"));(setIntro(false))}}>LEVEL 4</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/1.json"));(setIntro(false))}}>LEVEL 5</a>
       </div>:
       <>
       <div className="title">

@@ -1,0 +1,115 @@
+{
+  "name": "Level 1: The heros tutorial",
+  "defaults": {
+    "types": "water,ground,rock,monster,queen",
+    "startHealth": 3,
+    "ysize": 12,
+    "xsize": 15
+  },
+  "tiles": {
+    "rows": {
+      "0": {
+        "13":{
+          "id":1,
+          "type": "water"
+        }
+      },
+      "1": {
+        "13":{
+          "id":1,
+          "type": "water"
+        }
+      },
+      "2": {
+        "12": {
+          "id": 1,
+          "type": "queen"
+        },
+        "13":{
+          "id":1,
+          "type": "water"
+        }
+      },
+      "3": {
+        "0": {
+          "id": 8,
+          "type": "rock"
+        },
+        "1": {
+          "id": 8,
+          "type": "rock"
+        },
+        "2": {
+          "id": 8,
+          "type": "rock"
+        },
+        "3": {
+          "id": 8,
+          "type": "rock"
+        },
+        "4": {
+          "id": 8,
+          "type": "rock"
+        },
+        "5": {
+          "id": 8,
+          "type": "rock"
+        },
+        "13":{
+          "id":1,
+          "type": "water"
+        }
+      },
+      "4": {
+        "15": {
+          "id": 8,
+          "type": "rock"
+        },
+        "13":{
+          "id":1,
+          "type": "water"
+        }
+      },
+      "5": {        "2":{
+        "id":2,
+        "type":"water"
+      }},
+      "6": {        "2":{
+        "id":2,
+        "type":"water"
+      },
+        "3": {
+          "id": 666,
+          "type": "hero",
+          "movement": 1,
+          "hp": 10,
+          "initiative": 2
+        }
+      },
+      "7": {
+        "2":{
+          "id":2,
+          "type":"water"
+        },
+        "3": {
+          "id": 9,
+          "type": "rock"
+        }
+      },
+      "8": {        "2":{
+        "id":2,
+        "type":"water"
+      }},
+      "9": {        "2":{
+        "id":2,
+        "type":"water"
+      }},
+      "10": {        "2":{
+        "id":2,
+        "type":"water"
+      }},
+      "11": {},
+      "12": {},"13":{},"14": {},"15": {}
+    }
+  }
+}

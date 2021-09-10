@@ -154,10 +154,11 @@ user-select: none; /* Standard */
   display: flex;
   flex-direction: row;
   overflow: auto;
+  max-height: 30vh;
 }
 
 .console{
-  max-width: 50%;
+  width: 50%;
   margin-block: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;
@@ -181,13 +182,23 @@ user-select: none; /* Standard */
 }
 
 
-.cell{
+.cell{/*
   height: 5vh;
   width: 5vw;
-  min-width: 4em;
-  min-height: 4em;
+ /* min-width: 4em;
+  min-height: 4em;*/
+  min-height: 3.5vh;
+  min-width: 2.5vw;
+  height: 5.5vh;
+  width: 2.5vw;
   border: 0.1em solid black;
   flex:1;
+  background-color: #E3CDA6;
+}
+
+.bg-tile{
+  content:url(sprites/ground.png);
+  /*background-color: #1E38EB;*/
 }
 
 .water{
@@ -216,7 +227,7 @@ user-select: none; /* Standard */
 }
 
 .dmg{
-    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(180deg);
+    filter: sepia(13%) saturate(250%) brightness(80%) hue-rotate(307deg)
 }
 
 .row{
@@ -229,5 +240,6 @@ user-select: none; /* Standard */
   flex-wrap: nowrap;
   flex-direction: column;
   display: flex;
-  background-color: #E3CDA6;
+  max-height: 70vh;
+  overflow: auto;
 }
