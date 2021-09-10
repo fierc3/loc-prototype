@@ -59,7 +59,6 @@ function App() {
 
   useEffect(() => {
     if(reload){
-      console.log("reloadd+")
       setReload( r => !r);
       updateStatDisplay();
       var hero = getHero();
@@ -208,7 +207,6 @@ const playMovementSound = () =>{
       attack: data.attack ? data.attack : 1,
       props : data
     }
-    console.log(entity);
     return entity;
   }
 
@@ -320,10 +318,9 @@ const playMovementSound = () =>{
 
 
   const attack = (x: number, y: number, attacker: Entity) => {
-    console.log("attack " + x + " " + y);
     var defender = getEntityOnTile(x, y);
     if (defender) {
-      console.log(attacker.type + " is attacaking " + defender.type + " for " + attacker.attack)
+      console.log(attacker.type + " is attacking " + defender.type + " for " + attacker.attack)
       defender.props.hp = (defender?.props.hp - attacker?.attack);
       if(defender.props.hp < 1){
         //remove defender
@@ -393,7 +390,6 @@ function getRandomArbitrary(min:number, max:number) {
   }
 
   const heroTurn = () => {
-    console.log("****It's the hero's turn!******")
     var heroCode = editorRef!.current!.getValue();
     var re = /mapData/gi;
     eval(heroCode.replace(re, 'no cheeto my mateo'));
@@ -401,7 +397,6 @@ function getRandomArbitrary(min:number, max:number) {
   }
 
   const monsterTurn = (monster: Entity) => {
-    console.log("---Monster " + monster.id + " turn---")
     //SAMPLE CODE / in further version logic should be interchangeable
     var hero = getHero();
     if(!hero) return;
