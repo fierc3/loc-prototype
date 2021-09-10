@@ -197,6 +197,7 @@ const playMovementSound = () =>{
 
   const getEntityOnTile= (x: number, y:number): Entity | undefined => {
     var data = mapData.tiles.rows[y+""][""+x];
+    if(!data) return undefined;
     var entity: Entity = {
       id: data.id,
       col : +x,
@@ -439,6 +440,25 @@ function getRandomArbitrary(min:number, max:number) {
       }
     }
   }
+
+
+  /*exposed specific hero actions*/
+
+  const moveHeroUp = () => { moveUp(getHero())}
+  const moveHeroDown = () => { moveDown(getHero())}
+  const moveHeroLeft = () => { moveLeft(getHero())}
+  const moveHeroRight = () => { moveRight(getHero())}
+  const attackUp = () => { var hero = getHero(); attack(hero.col, hero.row-1, hero); }
+  const attackDown = () => { var hero = getHero(); attack(hero.col, hero.row+1, hero); }
+  const attackLeft = () => { var hero = getHero(); attack(hero.col-1, hero.row, hero); }
+  const attackRight = () => { var hero = getHero(); attack(hero.col+1, hero.row, hero); }
+
+  //LVL 2
+  const spinAttack = () => {
+      console.log("COULD SPINATTACK, ABILITY HASN'T BEEN UNLOCKED YET");
+    }
+
+
 
 
   return (
