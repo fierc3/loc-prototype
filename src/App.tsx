@@ -349,6 +349,7 @@ function getRandomArbitrary(min:number, max:number) {
     if(playing === 'true'){
       return;
     }
+    navigator.clipboard.writeText(editorRef!.current!.getValue());
     console.log("Play is starting...");
     setPlaying('true');
   }
