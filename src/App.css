@@ -156,6 +156,7 @@ user-select: none; /* Standard */
 }
 
 .console{
+  max-width: 50%;
   margin-block: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: white;

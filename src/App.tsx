@@ -23,6 +23,7 @@ function App() {
     col : number
     movement: number,
     initiative: number,
+    attack:number,
     props:any
   }
   const playerName: string = "a";
@@ -51,7 +52,7 @@ function App() {
   }, [playing])
 
   useEffect(() => {
-
+    updateStatDisplay();
   }, [mapData])
   
 
@@ -61,6 +62,14 @@ function App() {
       console.log("reloadd+")
       setReload( r => !r);
       updateStatDisplay();
+      var hero = getHero();
+      if(!hero ||hero.props.hp < 1){
+        //gameover
+        setPlaying('false');
+        navigator.clipboard.writeText(editorRef!.current!.getValue())
+        alert("GAME OVER. Sending thy hero back to the menu. Copied the used code to clipboard");
+        window.location.reload();
+      }
     }
   }, [reload])
 
@@ -76,9 +85,15 @@ function App() {
 
   const updateStatDisplay = () =>{
     var entities = getMonsters();
-    entities.push(getHero());
+    var hero = getHero();
+    if(hero) entities.push(hero);
     var output = "\\\\\\STATS///<br/>";
-    entities.reverse().forEach(x => output += x.type + "-"+ x.id+ "&emsp;&emsp;&emsp;&emsp;hp: " + x.props.hp +"<br/>");
+    entities.reverse().forEach(x =>{ 
+      if(x.props.hp < 1){
+        clearTile(x.col, x.row)
+        return;
+      }
+      output += x.type + "-"+ x.id+ "&emsp;&emsp;&emsp;&emsp;hp: " + x.props.hp +"&emsp;&emsp;&emsp;&emsp;ATP:"+x.attack+"<br/>"});
     setStatsOutput(output);
   }
 
@@ -104,6 +119,7 @@ const playMovementSound = () =>{
       }
 
     }
+    console.log("Events will be output here")
   };
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -146,6 +162,7 @@ const playMovementSound = () =>{
             type: value.type,
             movement: value.movement ? value.movement : 0,
             initiative: value.initiative ? value.initiative : 1,
+            attack: value.attack ? value.attack : 1,
             props : cellValue
           }
           entities.push(entity)
@@ -155,7 +172,7 @@ const playMovementSound = () =>{
     return entities;
   };
 
-  const findEntityById = (id:number) : any => {
+  const findEntityById = (id:number) : Entity | undefined => {
     for (const [rowKey, rowValue] of Object.entries(mapData.tiles.rows)) {
       for (const [cellKey, cellValue] of Object.entries(
         mapData.tiles.rows[rowKey]
@@ -169,12 +186,29 @@ const playMovementSound = () =>{
             type: value.type,
             movement: value.movement ? value.movement : 0,
             initiative: value.initiative ? value.initiative : 1,
+            attack: value.attack ? value.attack : 1,
             props : cellValue
           }
           return entity;
         }
       }
     }
+  }
+
+  const getEntityOnTile= (x: number, y:number): Entity | undefined => {
+    var data = mapData.tiles.rows[y+""][""+x];
+    var entity: Entity = {
+      id: data.id,
+      col : +x,
+      row : +y,
+      type: data.type,
+      movement: data.movement ? data.movement : 0,
+      initiative: data.initiative ? data.initiative : 1,
+      attack: data.attack ? data.attack : 1,
+      props : data
+    }
+    console.log(entity);
+    return entity;
   }
 
 
@@ -283,6 +317,23 @@ const playMovementSound = () =>{
     return true;
   }
 
+
+  const attack = (x: number, y: number, attacker: Entity) => {
+    console.log("attack " + x + " " + y);
+    var defender = getEntityOnTile(x, y);
+    if (defender) {
+      console.log(attacker.type + " is attacaking " + defender.type + " for " + attacker.attack)
+      defender.props.hp = (defender?.props.hp - attacker?.attack);
+      if(defender.props.hp < 1){
+        //remove defender
+        //if(defender.type !== 'hero')
+       // clearTile(x,y);
+      }
+    } else {
+      console.log(attacker.type + " tried to attack [col " + x + ", row" + y + "] but nothing to attack was there");
+    }
+  }
+
 /*****HELPER METHODS*********/
 
 function delay(ms: number) {
@@ -305,9 +356,11 @@ function getRandomArbitrary(min:number, max:number) {
   }
 
   const allTurns = async (entities: Entity[]) => {
+    if(!playing) return;
     var index = 0;
 
     const entityTurn = async (entity:Entity) => {
+      if(!playing) return;
         if(entity.type === 'hero'){
           heroTurn();
         }else{
@@ -346,37 +399,45 @@ function getRandomArbitrary(min:number, max:number) {
 
   }
 
-  const monsterTurn = (monster:Entity) => {
-    console.log("---Monster "+monster.id+" turn---")
+  const monsterTurn = (monster: Entity) => {
+    console.log("---Monster " + monster.id + " turn---")
     //SAMPLE CODE / in further version logic should be interchangeable
     var hero = getHero();
+    if(!hero) return;
     var colDiff = hero.col - monster.col;
     var rowDiff = hero.row - monster.row;
     var notBlocked = true;
-    if(Math.abs(rowDiff) > Math.abs(colDiff) ){ // check which axis is further away, then reduce the one closer
+
+    if (Math.abs(rowDiff) + Math.abs(colDiff) < 2) {
+      attack(hero.col, hero.row, monster);
+    } else {
+
+
+
+      if (Math.abs(rowDiff) > Math.abs(colDiff)) { // check which axis is further away, then reduce the one closer
         //reduce row axis
-        if(rowDiff<0){
-         notBlocked= moveUp(monster);
-        }else if(rowDiff >= 1){
-         notBlocked= moveDown(monster);
+        if (rowDiff < 0) {
+          notBlocked = moveUp(monster);
+        } else if (rowDiff >= 1) {
+          notBlocked = moveDown(monster);
         }
-    }else{
-      //recude col axis
-      if(colDiff<0){
-        notBlocked= moveLeft(monster);
-      }else if(colDiff >= 1){
-       notBlocked = moveRight(monster);
+      } else {
+        //recude col axis
+        if (colDiff < 0) {
+          notBlocked = moveLeft(monster);
+        } else if (colDiff >= 1) {
+          notBlocked = moveRight(monster);
+        }
       }
-    }
-    while(!notBlocked){
+      while (!notBlocked) {
         {
-          var movementOptions = [():boolean => {return moveDown(monster)}, ():boolean => {return moveUp(monster)}, ():boolean => {return moveLeft(monster)}, ():boolean => {return moveRight(monster)}];
-          var pick = getRandomArbitrary(0,movementOptions.length-1);
+          var movementOptions = [(): boolean => { return moveDown(monster) }, (): boolean => { return moveUp(monster) }, (): boolean => { return moveLeft(monster) }, (): boolean => { return moveRight(monster) }];
+          var pick = getRandomArbitrary(0, movementOptions.length - 1);
           notBlocked = movementOptions[Math.trunc(pick)]();
           console.log("Monster is confused, looking for alternative path")
         }
+      }
     }
-
   }
 
 
