@@ -1,86 +1,112 @@
 {
-  "name": "Level 1: The heros welcome",
+  "name": "Level 3: Enemy frontier",
   "defaults": {
     "types": "water,ground,rock,monster,queen",
     "startHealth": 10,
-    "ysize":10,
-    "xsize":10
+    "ysize": 10,
+    "xsize": 12
   },
   "tiles": {
     "rows": {
-      "0": {},
-      "1": {
-        "1": {
-          "id" : 1,
-          "type": "queen"
-        }
-      },
+      "0": { "6": { "id": 1, "type": "queen" } },
+      "1": { "0": { "id": 3, "type": "water" } },
       "2": {
-        "0": {
-          "id" : 2,
-          "type": "water"
-        },
+        "0": { "id": 3, "type": "water" },
+        "4": { "id": 2, "type": "rock" },
+        "8": { "id": 2, "type": "rock" }
+      },
+      "3": {
+        "0": { "id": 3, "type": "water" },
         "1": {
-          "id" : 3,
-          "type": "water"
-        },
-        "2": {
-          "id" : 4,
-          "type": "water"
+          "id": 11,
+          "type": "monster",
+          "movement": 1,
+          "hp": 2,
+          "initiative": 3,
+          "xp": 100
         },
         "3": {
-          "id" : 5,
-          "type": "water"
-        },
-        "4": {
-          "id" : 6,
-          "type": "water"
-        },
-        "5": {
-          "id" : 7,
-          "type": "water"
-        }
-      },
-      "3": {},
-      "4": {
-        "7": {
-          "id" : 8,
-          "type": "rock"
-        }
-      },
-      "5": {},
-      "6": {"5":{
-        "id" : 666,
-        "type":"hero",
-        "movement": 1,
-        "hp" : 10,
-        "initiative": 2
-      
-        }
-      },
-      "7": 
-        {
-        "3":{
-        "id" : 9,
-        "type":"rock"
-        },
-        "8":{
-          "id" : 10,
-          "type":"monster", 
+          "id": 11,
+          "type": "monster",
           "movement": 1,
-          "hp":2,
-          "initiative": 1,
+          "hp": 2,
+          "initiative": 3,
           "xp": 100
-          }
         },
-      "8": {},
-      "9": {"0":{
-        "id" : 11,
-        "type":"monster", 
-        "movement": 1,
-        "hp": 2,
-        "initiative": 3,
-        "xp": 100}}
+        "4": { "id": 2, "type": "rock" },
+        "5": {
+          "id": 11,
+          "type": "monster",
+          "movement": 1,
+          "hp": 2,
+          "initiative": 3,
+          "xp": 100
+        },
+        "7": {
+          "id": 11,
+          "type": "monster",
+          "movement": 1,
+          "hp": 2,
+          "initiative": 3,
+          "xp": 100
+        },
+        "8": { "id": 2, "type": "rock" },
+        "9": {
+          "id": 11,
+          "type": "monster",
+          "movement": 1,
+          "hp": 2,
+          "initiative": 3,
+          "xp": 100
+        },
+        "11": {
+          "id": 11,
+          "type": "monster",
+          "movement": 1,
+          "hp": 2,
+          "initiative": 3,
+          "xp": 100
+        }
+      },
+      "4": {
+        "0": { "id": 3, "type": "water" },
+        "4": { "id": 2, "type": "rock" },
+        "8": { "id": 2, "type": "rock" }
+      },
+      "5": {
+        "0": { "id": 3, "type": "water" },
+        "4": { "id": 2, "type": "rock" },
+        "8": { "id": 2, "type": "rock" }
+      },
+      "6": { "0": { "id": 3, "type": "water" } },
+      "7": {
+        "0": { "id": 3, "type": "water" },
+        "6": {
+          "id": 666,
+          "type": "hero",
+          "movement": 1,
+          "hp": 10,
+          "initiative": 2
+        }
+      },
+      "8": {
+        "0": { "id": 3, "type": "water" },
+        "11": { "id": 3, "type": "water" }
+      },
+      "9": {
+        "0": { "id": 3, "type": "water" },
+        "1": { "id": 3, "type": "water" },
+        "2": { "id": 3, "type": "water" },
+        "3": { "id": 3, "type": "water" },
+        "4": { "id": 3, "type": "water" },
+        "5": { "id": 3, "type": "water" },
+        "6": { "id": 3, "type": "water" },
+        "7": { "id": 3, "type": "water" },
+        "8": { "id": 3, "type": "water" },
+        "9": { "id": 3, "type": "water" },
+        "10": { "id": 3, "type": "water" },
+        "11": { "id": 3, "type": "water" }
+      }
     }
   }
 }
