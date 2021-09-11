@@ -2,14 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App.tsx';
+import Editor from './Editor.tsx';
 import MapGrid from './MapGrid.tsx'
 import reportWebVitals from './reportWebVitals';
-import themeMp3 from './sounds/theme.mp3'
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Route path="/editor" component={Editor} exact />
+    <Route path="/" component={App} exact />
+
+    </BrowserRouter>,
   document.getElementById('root')
 );
 
