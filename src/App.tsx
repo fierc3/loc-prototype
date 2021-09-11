@@ -325,8 +325,10 @@ const playGameOverSound = () => {
       setMyXp(myXp as number + 300);
       setPlaying('false');
     }
+    console.log("isBLocking spot: " + mapData.tiles.rows[y+""][""+x]?.type)
+    console.log(["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type));
 
-    return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) > 0
+    return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0
   } 
 
   const clearTile = (x: number, y:number) => {
@@ -351,7 +353,7 @@ const playGameOverSound = () => {
   const moveUp = (entity: Entity):boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
-    entity.row= entity.row - entity.movement;
+    entity.row= oldY- 1;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go up");
       entity.col = oldX;
@@ -379,7 +381,7 @@ const playGameOverSound = () => {
   const moveLeft = (entity:Entity) : boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
-    entity.col = oldX - entity.movement;
+    entity.col = oldX - 1;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go left");
       entity.col = oldX;
@@ -393,7 +395,7 @@ const playGameOverSound = () => {
   const moveRight = (entity: Entity) :boolean => {
     var oldX = entity.col;
     var oldY = entity.row;
-    entity.col = oldX + entity.movement;
+    entity.col = oldX + 1;
     if(!isInbounds(entity.col,entity.row) ||isBlocked(entity.col,entity.row) ){
       console.log(entity.type + " can't go right");
       entity.col = oldX;
@@ -582,8 +584,8 @@ function getRandomArbitrary(min:number, max:number) {
       <div className="App">
         <div className="Play-grid"> 
           {mapData && !reload?
-          <MapGrid mapData={mapData}></MapGrid>
-          :<MapGrid mapData={mapData}></MapGrid>
+          <MapGrid mapData={mapData} editorClick={()=> {}}></MapGrid>
+          :<MapGrid mapData={mapData} editorClick={()=> {}}></MapGrid>
           } 
           <div className="outputs">
               <p className="console" ref={playConsole}></p>
