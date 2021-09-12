@@ -323,7 +323,7 @@ const playGameOverSound = () => {
       playWinSound();
       setMyXp(myXp as number + 300);
       setPlaying('false');
-      alert("GAME OVER. Sending thy hero back to the menu. Copied the used code to clipboard");
+      alert("YOU WIN, received XP for completing level. Sending thy hero back to the menu. Copied the used code to clipboard");
       window.location.reload();
     }
     return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0
