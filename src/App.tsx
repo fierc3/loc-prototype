@@ -320,14 +320,12 @@ const playGameOverSound = () => {
 
   const isBlocked = (x: number, y:number) : boolean => {
     if(["queen","gem"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0){
-      console.log("You have won! THANKS FOR SAVING COOERULE. YOURE GREAT")
       playWinSound();
       setMyXp(myXp as number + 300);
       setPlaying('false');
+      alert("GAME OVER. Sending thy hero back to the menu. Copied the used code to clipboard");
+      window.location.reload();
     }
-    console.log("isBLocking spot: " + mapData.tiles.rows[y+""][""+x]?.type)
-    console.log(["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type));
-
     return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0
   } 
 
