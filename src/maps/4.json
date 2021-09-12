@@ -1,5 +1,5 @@
 {
-    "name": "Level 2: The heros welcome",
+    "name": "Level 4: To spin or to flee",
     "defaults": {
         "types": "water,ground,rock,monster,queen",
         "startHealth": 10,
@@ -58,14 +58,6 @@
                 "0": {
                     "id": 2,
                     "type": "rock"
-                },
-                "2": {
-                    "id": 11,
-                    "type": "monster",
-                    "movement": 1,
-                    "hp": 2,
-                    "initiative": 3,
-                    "xp": 100
                 },
                 "8": {
                     "id": 2,
@@ -213,14 +205,6 @@
                 "0": {
                     "id": 2,
                     "type": "rock"
-                },
-                "2": {
-                    "id": 11,
-                    "type": "monster",
-                    "movement": 1,
-                    "hp": 2,
-                    "initiative": 3,
-                    "xp": 100
                 },
                 "7": {
                     "id": 3,
