@@ -482,8 +482,6 @@ function getRandomArbitrary(min:number, max:number) {
       entities = entities.sort((x,y) => x.initiative - y.initiative);
       await allTurns(entities);
       await delay(entities.length * (baseDelay+ (baseDelay/100)));
-      //await reloadGrid();
-      //TODO: fix with states  naaaaaaaaah or maybe not
 
     }
 
