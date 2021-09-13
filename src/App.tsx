@@ -410,21 +410,21 @@ const playGameOverSound = () => {
 
   const attack = (x: number, y: number, attacker: Entity) => {
     var defender = getEntityOnTile(x, y);
-    if (defender) {
+    if (defender && (defender.type === 'monster' || defender.type === 'hero')) {
       console.log(attacker.type + " is attacking " + defender.type + " for " + attacker.attack)
       defender.props.hp = (defender?.props.hp - attacker?.attack);
       defender.props.dmg = true;
       playAttackSound();
-      if(defender.props.hp < 1){
+      if (defender.props.hp < 1) {
         //remove defender
-        if(defender.type !== 'hero'){
+        if (defender.type !== 'hero') {
           playEnemyDieSound();
         }
-       // clearTile(x,y);
-      }else{
-        if(defender.type === 'hero'){
+        // clearTile(x,y);
+      } else {
+        if (defender.type === 'hero') {
           playHeroHurtSound();
-        }else{
+        } else {
           playEnemyHurtSound();
         }
       }
@@ -490,12 +490,7 @@ function getRandomArbitrary(min:number, max:number) {
 
   }
 
-  const heroTurn = () => {
-    var heroCode = editorRef!.current!.getValue();
-    var re = /mapData/gi;
-    eval(heroCode.replace(re, 'no cheeto my mateo').split("END INTRO")[1]);
 
-  }
 
   const removeFromRange = (monster: Entity) => {
     if(enemiesInRange.find(x => x.id === monster.id)){
@@ -545,26 +540,97 @@ function getRandomArbitrary(min:number, max:number) {
     }
   }
 
+  var hasDoneMovement = false;
+  var hasDoneAction = false;
+
 
   /*exposed specific hero actions*/
 
-  const moveHeroUp = () => { moveUp(getHero())}
-  const moveHeroDown = () => { moveDown(getHero())}
-  const moveHeroLeft = () => { moveLeft(getHero())}
-  const moveHeroRight = () => { moveRight(getHero())}
-  const attackUp = () => { var hero = getHero(); attack(hero.col, hero.row-1, hero); }
-  const attackDown = () => { var hero = getHero(); attack(hero.col, hero.row+1, hero); }
-  const attackLeft = () => { var hero = getHero(); attack(hero.col-1, hero.row, hero); }
-  const attackRight = () => { var hero = getHero(); attack(hero.col+1, hero.row, hero); }
+  const moveHeroUp = () => {
+    if (!hasDoneMovement) { 
+      moveUp(getHero()) 
+      hasDoneMovement = true;
+    }else{
+      console.log("Hero already moved, cant move again");
+    }
+  }
+
+  const moveHeroDown = () => {
+    if (!hasDoneMovement) { 
+      moveDown(getHero()) 
+      hasDoneMovement = true;
+    }else{
+      console.log("Hero already moved, cant move again");
+    }
+  }
+  const moveHeroLeft = () => {
+    if (!hasDoneMovement) { 
+      moveLeft(getHero()) 
+      hasDoneMovement = true;
+    }else{
+      console.log("Hero already moved, cant move again");
+    }
+  }
+  const moveHeroRight = () => {
+    if (!hasDoneMovement) { 
+      moveRight(getHero()) 
+      hasDoneMovement = true;
+    }else{
+      console.log("Hero already moved, cant move again");
+    }
+  }
+  
+  const attackUp = () => { if(hasDoneAction){console.log("Hero can't attack, hes out of actions");return;}var hero = getHero(); attack(hero.col, hero.row-1, hero);hasDoneAction=true; }
+  const attackDown = () => {  if(hasDoneAction){console.log("Hero can't attack, hes out of actions");return;}var hero = getHero(); attack(hero.col, hero.row+1, hero);hasDoneAction=true; }
+  const attackLeft = () => {  if(hasDoneAction){console.log("Hero can't attack, hes out of actions");return;}var hero = getHero(); attack(hero.col-1, hero.row, hero); hasDoneAction=true;}
+  const attackRight = () => {  if(hasDoneAction){console.log("Hero can't attack, hes out of actions");return;}var hero = getHero(); attack(hero.col+1, hero.row, hero); hasDoneAction=true;}
 
   //LVL 2
   const spinAttack = () => {
-      console.log("COULD SPINATTACK, ABILITY HASN'T BEEN UNLOCKED YET");
+    if(calculateLevel(myXp) >= 2){
+      if(hasDoneAction){
+        console.log("Hero can't spin attack, hes out of actions");
+        return;
+      }
+      attackUp();
+      hasDoneAction = false;
+      attackDown();
+      hasDoneAction = false;
+      attackLeft();
+      hasDoneAction = false;
+      attackRight();
+      console.log("The hero spin attacked");
+      return
     }
+      console.log("COULDNT SPINATTACK, ABILITY HASN'T BEEN UNLOCKED YET");
+  }
+
+    //LVL 3
+    const selfHeal = () => {
+      if(calculateLevel(myXp) >= 3){
+        if(hasDoneAction){
+          console.log("Hero can't heal, hes out of actions");
+          return;
+        }
+        getHero().props.hp += 1;
+        console.log("The hero healed for 1");
+        hasDoneAction = true;
+        return
+      }
+        console.log("COULDNT HEAL, ABILITY HASN'T BEEN UNLOCKED YET");
+    }
+
+
     const Memory: any[] = [];
 
 
-
+    const heroTurn = () => {
+      hasDoneMovement = false;
+      hasDoneAction = false;
+      var heroCode = editorRef!.current!.getValue();
+      var re = /mapData/gi;
+      eval(heroCode.replace(re, 'no cheeto my mateo').split("END INTRO")[1]);
+    }
 
   return (
     <div className="Container">

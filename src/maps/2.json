@@ -39,7 +39,15 @@
         "5": {
           "id" : 7,
           "type": "water"
-        }
+        },
+        "9":{
+          "id" : 13,
+          "type":"monster", 
+          "movement": 1,
+          "hp":2,
+          "initiative": 1,
+          "xp": 100
+          }
       },
       "3": {},
       "4": {
