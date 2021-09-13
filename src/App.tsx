@@ -23,6 +23,9 @@ import gameOverMp3 from './sounds/gameover.wav'
 import winMp3 from './sounds/win.wav'
 // @ts-ignore
 import battleMp3 from './sounds/battle.mp3'
+// @ts-ignore
+import Tutorial from "./tutorial/Tutorial";
+
 
 
 
@@ -232,7 +235,7 @@ const playGameOverSound = () => {
     alert(editorRef?.current);
   };
 
-  const getEntities = (type: string): any[] => {
+  const getEntities = (type: string): Entity[] => {
     var entities: any[] = [];
     for (const [rowKey, rowValue] of Object.entries(mapData.tiles.rows)) {
       for (const [cellKey, cellValue] of Object.entries(
@@ -490,7 +493,7 @@ function getRandomArbitrary(min:number, max:number) {
   const heroTurn = () => {
     var heroCode = editorRef!.current!.getValue();
     var re = /mapData/gi;
-    eval(heroCode.replace(re, 'no cheeto my mateo'));
+    eval(heroCode.replace(re, 'no cheeto my mateo').split("END INTRO")[1]);
 
   }
 
@@ -595,11 +598,7 @@ function getRandomArbitrary(min:number, max:number) {
             height="80vh"
             theme="vs-dark"
             defaultLanguage="typescript"
-            defaultValue="/* some comment
-            test */
-           
-            var hero = getHero()
-            moveUp(hero);"
+            defaultValue={Tutorial}
             onMount={handleEditorDidMount}
           />
           <div className="buttonBar" onClick={play}>
