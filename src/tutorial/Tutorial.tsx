@@ -19,7 +19,7 @@ const Memory:any[] = []; //This array is the only way to save information for mu
  * Your code below will execute once per turn. The turn order is determined by an entities speed.
  * In most cases your hero will have first turn.
  * In your turn you can only do 1 movement action and 1 attack/interact action
- * 
+ * To remember things longer than 1 turn, you should use the Memory array.
  */
 
 ///////END INTRO///////
