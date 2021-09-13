@@ -639,7 +639,7 @@ function getRandomArbitrary(min:number, max:number) {
       <a className="intro-answer" onClick={() => {setMapData(require("./maps/2.json"));(setIntro(false))}}>LEVEL 2</a>
       <a className="intro-answer" onClick={() => {setMapData(require("./maps/3.json"));(setIntro(false))}}>LEVEL 3</a>
       <a className="intro-answer" onClick={() => {setMapData(require("./maps/4.json"));(setIntro(false))}}>LEVEL 4</a>
-      <a className="intro-answer" onClick={() => {setMapData(require("./maps/1.json"));(setIntro(false))}}>LEVEL 5</a>
+      <a className="intro-answer" onClick={() => {setMapData(require("./maps/5.json"));(setIntro(false))}}>LEVEL 5</a>
       </div>:
       <>
       <div className="title">
