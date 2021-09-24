@@ -332,6 +332,10 @@ const playGameOverSound = () => {
     return ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) >= 0
   } 
 
+  const validHeroSpot = (x: number,y:number) => {
+    return (isInbounds(x,y) && ["monster","rock","water","hero"].indexOf(mapData.tiles.rows[y+""][""+x]?.type) <1 );
+  }
+
   const clearTile = (x: number, y:number) => {
     if(mapData.tiles.rows[y+""] &&  mapData.tiles.rows[y+""][""+x]){
       mapData.tiles.rows[y+""][""+x] = null;
