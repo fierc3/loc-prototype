@@ -8,7 +8,9 @@ Will be added once the documentation has been written for the course
 # Do you want to run this app?
 Prerequisites: A modern browser and node
 
-Stable verison of the game can be played here: https://iocprotoype.azurewebsites.net/
+~~Stable verison of the game can be played here: https://iocprotoype.azurewebsites.net/~~
+
+__no longer supported__
 
 ## Available Scripts
 
