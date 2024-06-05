@@ -26,11 +26,6 @@ import battleMp3 from './sounds/battle.mp3'
 // @ts-ignore
 import Tutorial from "./tutorial/Tutorial";
 
-
-
-
-
-
 function App() {
 
   type Entity = {

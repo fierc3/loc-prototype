@@ -9,8 +9,8 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 ReactDOM.render(
   <BrowserRouter>
-    <Route path="/editor" component={Editor} exact />
-    <Route path="/" component={App} exact />
+    <Route path={process.env.PUBLIC_URL + "/editor"} component={Editor} exact />
+    <Route path={process.env.PUBLIC_URL} component={App} exact />
 
     </BrowserRouter>,
   document.getElementById('root')
