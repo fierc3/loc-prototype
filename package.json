@@ -1,6 +1,7 @@
 {
   "name": "loc-prototype",
   "version": "0.1.0",
+  "homepage": "https://amaruq.ch/r-apps/loc",
   "private": true,
   "dependencies": {
     "@monaco-editor/react": "^4.2.2",
@@ -24,8 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "watch": "npm-watch"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +49,6 @@
     "start": "{src,test}/*.tsx"
   },
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
   }
 }
